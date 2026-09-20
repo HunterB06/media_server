@@ -89,6 +89,26 @@ services:
       - ${CONFIG}/radarr:/home/radarr/.config/radarr
     restart: unless-stopped
 
+  bazarr:
+    build:
+      context: ./bazarr
+      args:
+        UID: $BAZARR_UID
+        GID: $GID
+        USER: bazarr
+    env_file: .env
+    ports:
+      - 6767
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    networks:
+      - media-server-network
+    volumes:
+      - ${MEDIA_DRIVE}:/data
+      - ${CONFIG}/bazarr:/opt/bazarr/data
+    restart: unless-stopped
+
   flaresolverr:
     image: flaresolverr/flaresolverr
     environment:
